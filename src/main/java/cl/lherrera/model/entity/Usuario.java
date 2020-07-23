@@ -11,7 +11,6 @@ import javax.persistence.Id;
 
 import cl.lherrera.config.EncoderUtils;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,13 +28,11 @@ public class Usuario {
     @Setter @Getter private String nombre;
     @Setter @Getter private String username;
     @Getter private String password;
-    
+
     @ElementCollection(fetch = FetchType.EAGER)
     @Setter @Getter private List<Rol> roles;
     
     public void setPassword(String password) {
         this.password = EncoderUtils.passwordEncoder().encode(password);
     }
-    
-    
 }

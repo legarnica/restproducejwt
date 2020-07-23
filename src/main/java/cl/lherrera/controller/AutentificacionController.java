@@ -15,15 +15,15 @@ import cl.lherrera.service.AutentificacionService;
 @RestController
 @RequestMapping("/api/v1/login")
 public class AutentificacionController {
+    
     @Autowired
     private AutentificacionService servicio;
+    
     
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public TokenDto usuarios(@RequestBody LoginFormDto loginForm) {
-        return servicio.autentificar(
-                loginForm.getUsername(), 
-                loginForm.getPassword()
-        );
+        return servicio.autentificar(loginForm.getUsername(), loginForm.getPassword());
+        
     }
 }

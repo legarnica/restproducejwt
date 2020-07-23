@@ -2,55 +2,47 @@ package cl.lherrera.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import cl.lherrera.service.token.ConfiguradorDeFiltradoPorToken;
 import cl.lherrera.service.token.ProveedorDeToken;
 
+@Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    
+
     @Autowired
-    ProveedorDeToken proveedorToken;
+    private ProveedorDeToken jwtTokenProvider;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // se elimina el csrfToken (inseguro)
         http.csrf().disable();
-        // declaramos que este sistema es
-        // un sistema sin estado
+
         http.sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        
-        // dejar disponible el login, y cerramos todo lo demás
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.authorizeRequests()
-        .antMatchers("/api/v1/login").permitAll()
-        .anyRequest().authenticated();
-        // manejamos la respuesta default en caso de error
+                .antMatchers("/api/v1/login").permitAll()
+                .anyRequest().authenticated();
+
         http.exceptionHandling().accessDeniedPage("/api/v1/login");
-        
-        // Aplicamos nuestra configuración del token
-        http.apply(new ConfiguradorDeFiltradoPorToken(proveedorToken));
-        
+
+        // aplicamos nuestra configuración personalizada
+        // para el uso del token
+        http.apply(new ConfiguradorDeFiltradoPorToken(jwtTokenProvider));
     }
 
-    /**
-     * siempre va y es igual.
-     */
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
-    
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
-    
 }
