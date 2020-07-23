@@ -86,7 +86,6 @@ public class ProveedorDeToken {
         return esValido;
     }
     
-    
     public String resuelveBearer(HttpServletRequest req) {
         String bearerToken = req.getHeader("Authorization");
         

@@ -27,7 +27,7 @@ public class ProducerestejemploApplication {
 @Component
 class AppStartupRunner implements ApplicationRunner {
     private static final Logger logger = LoggerFactory.getLogger(AppStartupRunner.class);
-    
+
     @Autowired
     private UsuarioDao dao;
     
@@ -43,4 +43,6 @@ class AppStartupRunner implements ApplicationRunner {
         dao.save(usuario);
         
     }
+    
+    
 }
